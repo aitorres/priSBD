@@ -14,11 +14,25 @@ def fetch_sbd_balance(username):
     balance = balance.strip(' SBD')
     return balance
 
+def usd_to_currency(currency_data, currency, amount):
+    conv_rate = currency_data['rates'][currency]
+    return float(amount)*float(conv_rate)
+
 def main():
-    sbd_data = fetch_json(settings.sbd_api_url)
+    sbd_data = fetch_json(settings.sbd_api_url)[0]
     currency_data = fetch_json(settings.currency_api_url)
     steem = Steemd(settings.steemd_nodes)
+
+    sbd_usd = sbd_data['price_usd']
+    available_currencies = [key for key in currency_data['rates']]
+
+    print("1 SBD equals $" + str(sbd_usd) + ".")
+    print("This is a list of available currencies: ")
+    print(available_currencies)
+    currency = input("What currency do you want information about?: ")
+    converted_sbd = usd_to_currency(currency_data, currency, sbd_usd)
+    print("1 SBD equals " + currency + " " + str(converted_sbd) + ".")
     
-    
+
 if __name__ == '__main__':
     main()
