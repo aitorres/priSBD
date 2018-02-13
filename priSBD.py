@@ -48,15 +48,6 @@ def main():
     currency = config['USER']['currency']
     username = config['USER']['username']
 
-    sbd_data = fetch_json(config['URLS']['sbd_api'])[0]
-    currency_data = fetch_json(config['URLS']['currency_api'])
-    main_node = config['URLS']['steemd_nodes']
-    steemd_nodes = list()
-    steemd_nodes.append(main_node)
-
-    sbd_usd = float(sbd_data['price_usd'])
-    available_currencies = [key for key in currency_data['rates']]
-
     # maybe insert a while here
     gui = tk.Tk()
 
@@ -65,6 +56,21 @@ def main():
     logo_label.pack()
 
     if (username != ""): tk.Label(gui, text="Hello, " + username + "!").pack()
+
+    try:
+        sbd_data = fetch_json(config['URLS']['sbd_api'])[0]
+        currency_data = fetch_json(config['URLS']['currency_api'])
+        main_node = config['URLS']['steemd_nodes']
+        steemd_nodes = list()
+        steemd_nodes.append(main_node)
+    except:
+        error_label = tk.Label(gui, text="There was an eror during priSBD's setup. \nCheck your internet connection and try again!")
+        error_label.pack()
+        gui.mainloop()
+        return
+
+    sbd_usd = float(sbd_data['price_usd'])
+    available_currencies = [key for key in currency_data['rates']]
 
     price_label  = tk.Label(gui, text="1 SBD equals $" + str(sbd_usd) + ".")
     price_label.pack()
